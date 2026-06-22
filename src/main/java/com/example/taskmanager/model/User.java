@@ -1,11 +1,10 @@
 package com.example.taskmanager.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -16,13 +15,19 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Username is required")
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "Password is required")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotBlank(message = "Role is required")
     private String role; // e.g., ROLE_USER, ROLE_ADMIN
+
+    @OneToMany(mappedBy = "assignedUser")
+    @JsonIgnore
+    private List<Task> tasks;
 
     public User() {
     }
@@ -63,5 +68,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }
