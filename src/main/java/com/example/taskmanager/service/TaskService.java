@@ -6,6 +6,8 @@ import com.example.taskmanager.model.Task;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class TaskService {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
@@ -26,6 +30,7 @@ public class TaskService {
     }
 
     public List<Task> getAllTasks() {
+        logger.debug("Fetching all tasks");
         return taskRepository.findAll();
     }
 
@@ -54,18 +59,27 @@ public class TaskService {
     }
 
     public Task createTask(Task task) {
+        logger.info("Creating new task: {}", task.getName());
         return taskRepository.save(task);
     }
 
     public void deleteTask(Long id) {
+        logger.info("Deleting task with id: {}", id);
         taskRepository.deleteById(id);
     }
 
     public Task assignTaskToUser(Long taskId, Long userId) {
+        logger.info("Assigning task {} to user {}", taskId, userId);
         Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> {
+                    logger.error("Task not found: {}", taskId);
+                    return new RuntimeException("Task not found");
+                });
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    logger.error("User not found: {}", userId);
+                    return new RuntimeException("User not found");
+                });
         task.setAssignedUser(user);
         return taskRepository.save(task);
     }
