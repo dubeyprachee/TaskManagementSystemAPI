@@ -3,31 +3,40 @@ package com.example.taskmanager.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
+@Data
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Column("task_id")
+    private Long taskId;
 
     @NotBlank(message = "Task name is required")
-    private String name;
+//    @Column("task_title")
+    private String taskTitle;
 
-    private String description;
+//    @Column("task_description")
+    private String taskDescription;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required")
-    private Status status;
+//    @Column("task_status")
+    private Status taskStatus;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Priority is required")
-    private Priority priority;
+//    @Column("task_priority")
+    private Priority taskPriority;
 
     @NotNull(message = "Due date is required")
-    private LocalDate dueDate;
+//    @Column("task_due_date")
+    private LocalDate taskDueDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -37,66 +46,10 @@ public class Task {
     }
 
     public Task(String name, String description, Status status, Priority priority, LocalDate dueDate) {
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.priority = priority;
-        this.dueDate = dueDate;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Priority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public User getAssignedUser() {
-        return assignedUser;
-    }
-
-    public void setAssignedUser(User assignedUser) {
-        this.assignedUser = assignedUser;
+        this.taskTitle = name;
+        this.taskDescription = description;
+        this.taskStatus = status;
+        this.taskPriority = priority;
+        this.taskDueDate = dueDate;
     }
 }

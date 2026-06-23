@@ -11,11 +11,11 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    List<Task> findByPriority(Priority priority);
-    List<Task> findByStatus(Status status);
-    List<Task> findByDueDate(LocalDate dueDate);
-    List<Task> findByPriorityAndStatusAndDueDate(Priority priority, Status status, LocalDate dueDate);
-    List<Task> findByPriorityAndStatus(Priority priority, Status status);
-    List<Task> findByPriorityAndDueDate(Priority priority, LocalDate dueDate);
-    List<Task> findByStatusAndDueDate(Status status, LocalDate dueDate);
+    List<Task> findByTaskPriority(Priority priority);
+    List<Task> findByTaskStatus(Status status);
+    List<Task> findByTaskDueDate(LocalDate dueDate);
+    List<Task> findByTaskPriorityAndTaskStatusAndTaskDueDate(Priority priority, Status status, LocalDate dueDate);
+    List<Task> findByTaskPriorityAndTaskStatus(Priority priority, Status status);
+    List<Task> findByTaskPriorityAndTaskDueDate(Priority priority, LocalDate dueDate);
+    List<Task> findByTaskStatusAndTaskDueDate(Status status, LocalDate dueDate);
 }

@@ -21,17 +21,17 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.findByUsername("admin").isEmpty()) {
+        if (userRepository.findByUserName("admin").isEmpty()) {
             User admin = new User();
-            admin.setUsername("admin");
+            admin.setUserName("admin");
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole("ROLE_ADMIN");
             userRepository.save(admin);
         }
 
-        if (userRepository.findByUsername("user").isEmpty()) {
+        if (userRepository.findByUserName("user").isEmpty()) {
             User user = new User();
-            user.setUsername("user");
+            user.setUserName("user");
             user.setPassword(passwordEncoder.encode("user123"));
             user.setRole("ROLE_USER");
             userRepository.save(user);

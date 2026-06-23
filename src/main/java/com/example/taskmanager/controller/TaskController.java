@@ -34,7 +34,7 @@ public class TaskController {
             @RequestParam(required = false) Priority priority,
             @RequestParam(required = false) Status status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dueDate) {
-        logger.debug("REST request to get tasks with filters: priority={}, status={}, dueDate={}", priority, status, dueDate);
+        logger.info("REST request to get tasks with filters: priority={}, status={}, dueDate={}", priority, status, dueDate);
         return taskService.getFilteredTasks(priority, status, dueDate);
     }
 

@@ -36,19 +36,19 @@ public class TaskService {
 
     public List<Task> getFilteredTasks(Priority priority, Status status, LocalDate dueDate) {
         if (priority != null && status != null && dueDate != null) {
-            return taskRepository.findByPriorityAndStatusAndDueDate(priority, status, dueDate);
+            return taskRepository.findByTaskPriorityAndTaskStatusAndTaskDueDate(priority, status, dueDate);
         } else if (priority != null && status != null) {
-            return taskRepository.findByPriorityAndStatus(priority, status);
+            return taskRepository.findByTaskPriorityAndTaskStatus(priority, status);
         } else if (priority != null && dueDate != null) {
-            return taskRepository.findByPriorityAndDueDate(priority, dueDate);
+            return taskRepository.findByTaskPriorityAndTaskDueDate(priority, dueDate);
         } else if (status != null && dueDate != null) {
-            return taskRepository.findByStatusAndDueDate(status, dueDate);
+            return taskRepository.findByTaskStatusAndTaskDueDate(status, dueDate);
         } else if (priority != null) {
-            return taskRepository.findByPriority(priority);
+            return taskRepository.findByTaskPriority(priority);
         } else if (status != null) {
-            return taskRepository.findByStatus(status);
+            return taskRepository.findByTaskStatus(status);
         } else if (dueDate != null) {
-            return taskRepository.findByDueDate(dueDate);
+            return taskRepository.findByTaskDueDate(dueDate);
         } else {
             return taskRepository.findAll();
         }
@@ -59,7 +59,7 @@ public class TaskService {
     }
 
     public Task createTask(Task task) {
-        logger.info("Creating new task: {}", task.getName());
+        logger.info("Creating new task: {}", task.getTaskTitle());
         return taskRepository.save(task);
     }
 
