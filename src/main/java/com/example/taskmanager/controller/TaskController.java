@@ -1,8 +1,6 @@
 package com.example.taskmanager.controller;
 
-import com.example.taskmanager.model.Priority;
-import com.example.taskmanager.model.Status;
-import com.example.taskmanager.model.Task;
+import com.example.taskmanager.model.*;
 import com.example.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -22,12 +20,13 @@ public class TaskController {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
-    private final TaskService taskService;
-
     @Autowired
+    private TaskService taskService;
+
+    /*@Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
-    }
+    }*/
 
     @GetMapping
     public List<Task> getAllTasks(
@@ -39,7 +38,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
         logger.debug("REST request to get task: {}", id);
         return taskService.getTaskById(id)
                 .map(ResponseEntity::ok)
@@ -54,16 +53,22 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
         logger.debug("REST request to delete task: {}", id);
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{taskId}/assign/{userId}")
-    public ResponseEntity<Task> assignTaskToUser(@PathVariable Long taskId, @PathVariable Long userId) {
+    public ResponseEntity<Task> assignTaskToUser(@PathVariable Integer taskId, @PathVariable Integer userId) {
         logger.debug("REST request to assign task {} to user {}", taskId, userId);
         Task updatedTask = taskService.assignTaskToUser(taskId, userId);
         return ResponseEntity.ok(updatedTask);
+    }
+
+    @GetMapping("/summary")
+    public TaskSummary getTasksSummary() {
+        logger.debug("REST request to get task: summary");
+        return taskService.getTasksSummary();
     }
 }

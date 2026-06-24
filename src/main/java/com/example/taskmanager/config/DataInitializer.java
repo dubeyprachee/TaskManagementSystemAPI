@@ -1,3 +1,4 @@
+/*
 package com.example.taskmanager.config;
 
 import com.example.taskmanager.model.User;
@@ -38,3 +39,4 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 }
+*/

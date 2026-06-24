@@ -14,33 +14,33 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column("task_id")
-    private Long taskId;
+    @Column(name = "taskId")
+    private int taskId;
 
-    @NotBlank(message = "Task name is required")
-//    @Column("task_title")
+    @NotBlank(message = "Task title is required")
+    @Column(name = "taskTitle")
     private String taskTitle;
 
-//    @Column("task_description")
+    @Column(name = "taskDescription")
     private String taskDescription;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required")
-//    @Column("task_status")
+    @Column(name = "taskStatus")
     private Status taskStatus;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Priority is required")
-//    @Column("task_priority")
+    @Column(name = "taskPriority")
     private Priority taskPriority;
 
     @NotNull(message = "Due date is required")
-//    @Column("task_due_date")
+    @Column(name = "taskDueDate")
     private LocalDate taskDueDate;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User assignedUser;
+
+    @Column(name = "assignedTo")
+    private Integer assignedTo;
 
     public Task() {
     }

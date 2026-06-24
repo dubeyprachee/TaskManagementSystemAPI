@@ -97,7 +97,7 @@ public class TaskFilteringTest {
         User user = userRepository.save(new User("assignee", "password", "ROLE_USER"));
         Task task = taskRepository.findAll().get(0);
 
-        mockMvc.perform(put("/api/tasks/" + task.getId() + "/assign/" + user.getId())
+        mockMvc.perform(put("/api/tasks/" + task.getTaskId() + "/assign/" + user.getUserId())
                 .header("Authorization", userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.assignedUser.username").value("assignee"));

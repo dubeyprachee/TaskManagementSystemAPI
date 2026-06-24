@@ -15,24 +15,24 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column("user_id")
-    private Long userId;
+    @Column(name = "userId")
+    private int userId;
 
     @NotBlank(message = "Username is required")
-    @Column(unique = true)
-//    @Column("username")
+    @Column(name = "userName", unique = true)
+//    @Column(name = "userName")
     private String userName;
 
     @NotBlank(message = "Password is required")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @Column("password")
+    @Column(name = "password")
     private String password;
 
     @NotBlank(message = "Role is required")
-//    @Column("role")
+    @Column(name = "role")
     private String role; // e.g., ROLE_USER, ROLE_ADMIN
 
-    @OneToMany(mappedBy = "assignedUser")
+    @OneToMany(mappedBy = "assignedTo")
     @JsonIgnore
     private List<Task> tasks;
 

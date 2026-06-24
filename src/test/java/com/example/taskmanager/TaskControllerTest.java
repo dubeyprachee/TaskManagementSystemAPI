@@ -87,7 +87,7 @@ public class TaskControllerTest {
     void deleteTask_ShouldReturnForbidden_ForUserRole() throws Exception {
         Task task = taskRepository.save(new Task("Test Task", "Description", Status.PENDING, Priority.MEDIUM, LocalDate.now()));
 
-        mockMvc.perform(delete("/api/tasks/" + task.getId())
+        mockMvc.perform(delete("/api/tasks/" + task.getTaskId())
                 .header("Authorization", userToken))
                 .andExpect(status().isForbidden());
     }
@@ -96,7 +96,7 @@ public class TaskControllerTest {
     void deleteTask_ShouldReturnNoContent_ForAdminRole() throws Exception {
         Task task = taskRepository.save(new Task("Test Task", "Description", Status.PENDING, Priority.MEDIUM, LocalDate.now()));
 
-        mockMvc.perform(delete("/api/tasks/" + task.getId())
+        mockMvc.perform(delete("/api/tasks/" + task.getTaskId())
                 .header("Authorization", adminToken))
                 .andExpect(status().isNoContent());
     }
