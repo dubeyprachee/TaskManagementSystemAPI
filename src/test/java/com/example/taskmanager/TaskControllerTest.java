@@ -80,7 +80,7 @@ public class TaskControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Test Task"));
+                .andExpect(jsonPath("$.taskTitle").value("Test Task"));
     }
 
     @Test
@@ -104,6 +104,6 @@ public class TaskControllerTest {
     @Test
     void getAllTasks_ShouldReturnForbidden_WhenNotAuthenticated() throws Exception {
         mockMvc.perform(get("/api/tasks"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }
