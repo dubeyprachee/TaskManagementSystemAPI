@@ -68,7 +68,7 @@ public class TaskFilteringTest {
                 .param("status", "PENDING"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Task 1"));
+                .andExpect(jsonPath("$[0].taskTitle").value("Task 1"));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TaskFilteringTest {
                 .param("priority", "MEDIUM"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Task 2"));
+                .andExpect(jsonPath("$[0].taskTitle").value("Task 2"));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class TaskFilteringTest {
                 .param("dueDate", date))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Task 3"));
+                .andExpect(jsonPath("$[0].taskTitle").value("Task 3"));
     }
 
     @Test
@@ -100,6 +100,6 @@ public class TaskFilteringTest {
         mockMvc.perform(put("/api/tasks/" + task.getTaskId() + "/assign/" + user.getUserId())
                 .header("Authorization", userToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.assignedUser.username").value("assignee"));
+                .andExpect(jsonPath("$.assignedTo").value(user.getUserId()));
     }
 }
