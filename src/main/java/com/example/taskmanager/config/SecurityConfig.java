@@ -42,8 +42,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/tasks/**").hasRole("ADMIN")
-               /* .requestMatchers("/api/tasks/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/api/users/**").hasRole("ADMIN")*/
+                .requestMatchers("/api/tasks/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/api/users/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             ).formLogin(form -> form.disable())
                 .exceptionHandling(exception -> exception

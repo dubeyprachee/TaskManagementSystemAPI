@@ -59,10 +59,10 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{taskId}/assign/{userId}")
-    public ResponseEntity<Task> assignTaskToUser(@PathVariable Integer taskId, @PathVariable Integer userId) {
-        logger.debug("REST request to assign task {} to user {}", taskId, userId);
-        Task updatedTask = taskService.assignTaskToUser(taskId, userId);
+    @PostMapping("/assign")
+    public ResponseEntity<Task> assignTaskToUser(@RequestBody Task task) {
+        logger.debug("REST request to assign task {} to user {}", task.getTaskId(), task.getAssignedTo());
+        Task updatedTask = taskService.assignTaskToUser(task.getTaskId(), task.getAssignedTo());
         return ResponseEntity.ok(updatedTask);
     }
 

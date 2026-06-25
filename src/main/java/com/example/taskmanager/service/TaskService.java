@@ -89,35 +89,46 @@ public class TaskService {
 
         List<TaskStatusMonthProjection> summary = taskRepository.getTasksSummary();
 
+        logger.info("Fetched task summary from repository: {} records found", summary);
+
         List<String> months = new ArrayList<>();
         List<Integer> completedTasks = new ArrayList<>();
         List<Integer> pendingTasks = new ArrayList<>();
+        List<Integer> overdueTasks = new ArrayList<>();
 
         for(Month month : Month.values())
         {
             String monthName = month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH);
             months.add(monthName);
 
-            Long completedCount = summary.stream()
+            TaskStatusMonthProjection completedCount = summary.stream()
                     .filter(projection -> projection.getTaskMonth() != null)
-                    .filter(projection -> projection.getTaskMonth().equals(monthName))
-                    .filter(task -> Status.valueOf(task.getTaskStatus()).equals(Status.COMPLETED))
-                    .count();
+                    .filter(projection -> projection.getTaskMonth().equalsIgnoreCase(monthName))
+                    .filter(task -> "COMPLETED".equalsIgnoreCase(task.getTaskStatus()))
+                    .findFirst().orElse(null);
 
-            Long pendingCount = summary.stream()
+            TaskStatusMonthProjection pendingCount = summary.stream()
                     .filter(projection -> projection.getTaskMonth() != null)
-                    .filter(projection -> projection.getTaskMonth().equals(monthName))
-                    .filter(task -> Status.valueOf(task.getTaskStatus()).equals(Status.PENDING))
-                    .count();
+                    .filter(projection -> projection.getTaskMonth().equalsIgnoreCase(monthName))
+                    .filter(task -> "PENDING".equalsIgnoreCase(task.getTaskStatus()))
+                    .findFirst().orElse(null);
 
-            completedTasks.add(completedCount.intValue());
-            pendingTasks.add(pendingCount.intValue());
+            TaskStatusMonthProjection overdueCount = summary.stream()
+                    .filter(projection -> projection.getTaskMonth() != null)
+                    .filter(projection -> projection.getTaskMonth().equalsIgnoreCase(monthName))
+                    .filter(task -> "OVERDUE".equalsIgnoreCase(task.getTaskStatus()))
+                    .findFirst().orElse(null);
+
+            completedTasks.add(completedCount != null ? completedCount.getCount():0);
+            pendingTasks.add(pendingCount != null ? pendingCount.getCount():0);
+            overdueTasks.add(overdueCount != null ? overdueCount.getCount():0);
         }
 
         TaskSummary taskSummary = new TaskSummary();
         taskSummary.setMonths(months);
         taskSummary.setCompledtedCounts(completedTasks);
         taskSummary.setPendingCounts(pendingTasks);
+        taskSummary.setOverdueCounts(overdueTasks);
 
         logger.info("Task summary generated successfully {}" , taskSummary);
 
