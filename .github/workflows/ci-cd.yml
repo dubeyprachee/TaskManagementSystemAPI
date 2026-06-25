@@ -1,0 +1,30 @@
+name: Deploy code to ElasticBeanstalk
+
+on:
+  push:
+    branches:
+      - feature/task-management-api-13649486827386468420
+
+jobs:
+  build-and-deplploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@4
+      - name: Setup Java
+        uses: actions/setup-java
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build project
+        run: mvn clean install
+      - name: Deploy code to BeanStalk
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: "tms-app-application"
+          environment_name: "tms-app-application-env"
+          version_label: "${{ github.sha }}"
+          region: "ap-south-1"
+          deployment_package: target/task-manager-0.0.1-SNAPSHOT.jar
