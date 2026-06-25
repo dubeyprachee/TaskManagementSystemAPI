@@ -1,6 +1,6 @@
 # Task Management System
 
-A RESTful API for managing tasks, built with Spring Boot with MySQL. This system allows users to create, assign, and track tasks with different priorities and statuses, featuring secure authentication and role-based access control.
+A RESTful API for managing tasks, built with Spring Boot with MySQL DB. This system allows users to create, assign, and track tasks with different priorities and statuses, featuring secure authentication and role-based access control.
 
 ## Features
 
