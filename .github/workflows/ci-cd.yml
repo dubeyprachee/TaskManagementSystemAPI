@@ -24,7 +24,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: "tms-app-application"
-          environment_name: "tms-app-application-env"
+          environment_name: "Tms-app-application-env"
           version_label: "${{ github.sha }}"
           region: "ap-south-1"
           deployment_package: target/task-manager-0.0.1-SNAPSHOT.jar
