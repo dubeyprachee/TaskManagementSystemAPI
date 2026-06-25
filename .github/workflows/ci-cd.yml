@@ -30,3 +30,6 @@ jobs:
           version_label: "${{ github.sha }}"
           region: "ap-south-1"
           deployment_package: target/task-manager-0.0.1-SNAPSHOT.jar        
+    
+      - name: Test AWS identity
+        run: aws sts get-caller-identity
