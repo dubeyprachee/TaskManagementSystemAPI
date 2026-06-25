@@ -3,7 +3,7 @@ name: CI/CD - Deploy Spring Boot to AWS Elastic Beanstalk
 on:
   push:
     branches:
-      - main
+      - feature/task-management-api-13649486827386468420
   workflow_dispatch:
 
 permissions:
