@@ -14,7 +14,7 @@ public WebMvcConfigurer corsConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200") // Replace with your frontend URL
+                        .allowedOrigins("http://tmsapp-bucket.s3-website.ap-south-1.amazonaws.com") // Replace with your frontend URL
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
