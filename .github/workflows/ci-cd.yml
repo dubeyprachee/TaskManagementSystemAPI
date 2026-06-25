@@ -1,35 +1,80 @@
-name: Deploy code to ElasticBeanstalk
+name: CI/CD - Deploy Spring Boot to AWS Elastic Beanstalk
 
 on:
   push:
     branches:
-      - feature/task-management-api-13649486827386468420
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-deplploy:
+  build-and-deploy:
+    name: Build and Deploy to Elastic Beanstalk
     runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      EB_APPLICATION_NAME: ${{ secrets.EB_APPLICATION_NAME }}
+      EB_ENVIRONMENT_NAME: ${{ secrets.EB_ENVIRONMENT_NAME }}
+      EB_DEPLOYMENT_BUCKET: ${{ secrets.EB_DEPLOYMENT_BUCKET }}
+      VERSION_LABEL: springboot-${{ github.run_number }}-${{ github.sha }}
+
     steps:
-      - name: Check out source
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Setup Java
-        uses: actions/setup-java@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
-      - name: Build project
-        run: mvn clean install
-        
-      - name: Deploy code to BeanStalk
-        uses: einaregilsson/beanstalk-deploy@v22
+          cache: maven
+
+      - name: Run tests
+        run: mvn test
+
+      - name: Build Spring Boot JAR
+        run: mvn clean package -DskipTests
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          application_name: "tms-app-application"
-          environment_name: "Tms-app-application-env"
-          version_label: "${{ github.sha }}"
-          region: "ap-south-1"
-          deployment_package: target/task-manager-0.0.1-SNAPSHOT.jar        
-    
-      - name: Test AWS identity
-        run: aws sts get-caller-identity
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Prepare Elastic Beanstalk deployment package
+        run: |
+          JAR_FILE=$(ls target/*.jar | grep -v 'original' | head -n 1)
+          if [ -z "$JAR_FILE" ]; then
+            echo "No JAR file found in target directory"
+            exit 1
+          fi
+
+          mkdir -p deploy
+          cp "$JAR_FILE" deploy/application.jar
+
+          cd deploy
+          zip -r ../application.zip application.jar
+
+      - name: Upload deployment package to S3
+        run: |
+          aws s3 cp application.zip "s3://${EB_DEPLOYMENT_BUCKET}/${VERSION_LABEL}.zip"
+
+      - name: Create Elastic Beanstalk application version
+        run: |
+          aws elasticbeanstalk create-application-version             --application-name "${EB_APPLICATION_NAME}"             --version-label "${VERSION_LABEL}"             --source-bundle S3Bucket="${EB_DEPLOYMENT_BUCKET}",S3Key="${VERSION_LABEL}.zip"             --description "Deployment from GitHub Actions - Commit ${{ github.sha }}"
+
+      - name: Deploy application version to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk update-environment             --environment-name "${EB_ENVIRONMENT_NAME}"             --version-label "${VERSION_LABEL}"
+
+      - name: Wait for deployment to complete
+        run: |
+          aws elasticbeanstalk wait environment-updated             --environment-name "${EB_ENVIRONMENT_NAME}"
+
+      - name: Print deployment status
+        run: |
+          aws elasticbeanstalk describe-environments             --environment-names "${EB_ENVIRONMENT_NAME}"             --query "Environments[0].{Status:Status,Health:Health,VersionLabel:VersionLabel}"             --output table
